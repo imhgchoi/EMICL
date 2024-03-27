@@ -38,15 +38,15 @@ def evaluate(args, model, te_data):
         actions = map_text_to_action([response])
         predictions.append(actions[0])
     labels = map_text_to_action(te_data[1])
-    
-    precision = precision_score(labels, predictions)
-    recall = recall_score(labels, predictions)
-    f1 = f1_score(labels, predictions)
+
+    precision = precision_score(labels, predictions, average='micro')
+    recall = recall_score(labels, predictions, average='micro')
+    f1 = f1_score(labels, predictions, average='micro')
     accuracy = accuracy_score(labels, predictions)
 
+    print(f"F1 = {f1}")
     print(f"Pr = {precision}")
     print(f"Re = {recall}")
-    print(f"F1 = {f1}")
     print(f"Ac = {accuracy}")
     
 
