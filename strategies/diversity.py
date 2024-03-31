@@ -16,8 +16,8 @@ def transform(args, sample_pool_data, test_data, model):
 
     prompt = ''
     for i in idx:
-        question = sample_pool_data[0][i.item()]
-        answer = sample_pool_data[1][i.item()]
+        question = sample_pool_data[0][i]
+        answer = sample_pool_data[1][i]
         prompt += question + ' ' + answer + '. </s> '
 
     icl_test = []
