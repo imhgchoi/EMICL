@@ -15,7 +15,7 @@ def transform(args, sample_pool_data, test_data, model):
     idx = return_indices(args.K, km, train_embs.cpu())
 
     prompt = ''
-    for i in idx.flip(0):
+    for i in idx:
         question = sample_pool_data[0][i.item()]
         answer = sample_pool_data[1][i.item()]
         prompt += question + ' ' + answer + '. </s> '
