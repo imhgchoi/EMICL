@@ -26,7 +26,7 @@ def map_text_to_action(outputs):
         elif output in [' No.', ' No', 'No.', 'No', ' no.', ' no', 'no', 'no.']:
             preds.append(0)
         else :
-            preds.append(-1)
+            preds.append(0)
     return preds
 
 
@@ -39,16 +39,16 @@ def evaluate(args, model, te_data):
         if args.verbose :
             print(':::QUERY:::\n'+query)
             print(':::RESPONSE:::\n'+response)
-            
+
         actions = map_text_to_action([response])
         predictions.append(actions[0])
     labels = map_text_to_action(te_data[1])
 
-    precision = precision_score(labels, predictions, average='micro')
-    recall = recall_score(labels, predictions, average='micro')
-    f1 = f1_score(labels, predictions, average='micro')
+    precision = precision_score(labels, predictions, average='binary')
+    recall = recall_score(labels, predictions, average='binary')
+    f1 = f1_score(labels, predictions, average='binary')
     accuracy = accuracy_score(labels, predictions)
-
+    
     print(f"F1 = {f1}")
     print(f"Pr = {precision}")
     print(f"Re = {recall}")
