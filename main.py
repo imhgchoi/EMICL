@@ -35,6 +35,11 @@ def evaluate(args, model, te_data):
     predictions = []
     for query, label, ent1, ent2 in tqdm(zip(te_data[0], te_data[1], te_data[2], te_data[3]), total=len(te_data[0])):
         response, logit = model.generate(args, query, verbose=False)
+
+        if args.verbose :
+            print(':::QUERY:::\n'+query)
+            print(':::RESPONSE:::\n'+response)
+            
         actions = map_text_to_action([response])
         predictions.append(actions[0])
     labels = map_text_to_action(te_data[1])
@@ -59,13 +64,19 @@ def main(args):
     if args.strategy == 'similarity' :
         from strategies.similarity import transform
         test_data = transform(args, sample_pool_data, test_data, model)
+    elif args.strategy == 'uncertainty' :
+        from strategies.uncertainty import transform
+        test_data = transform(args, sample_pool_data, test_data, model, args.uncertainty_func)
+    elif args.strategy == 'diversity' :
+        from strategies.diversity import transform
+        test_data = transform(args, sample_pool_data, test_data, model)
         
     evaluate(args, model, test_data)
 
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--strategy', choices=['base','similarity'])
+    parser.add_argument('--strategy', type=str)
 
     # data args
     parser.add_argument('--data', type=str, default='abt-buy')
@@ -83,7 +94,7 @@ def parse_args():
     parser.add_argument('--midlayer_for_sim', action='store_true')
     parser.add_argument('--penultlayer_for_sim', action='store_true')
     parser.add_argument('--choose_certain', action='store_true')
-    parser.add_argument('--uncertainty_func', type=str, default='bin_entropy', choices=['bin_entropy','cat_entropy'])
+    parser.add_argument('--uncertainty_func', type=str, default='bin', choices=['bin','cat'])
 
     # train args
     # parser.add_argument('--dropout', type=float, default=0.0)
