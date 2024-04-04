@@ -63,7 +63,7 @@ def main(args):
 
     if args.strategy == 'similarity' :
         from strategies.similarity import transform
-        test_data = transform(args, sample_pool_data, test_data, model)
+        test_data = transform(args, sample_pool_data, test_data, model, args.similarity_func)
     elif args.strategy == 'uncertainty' :
         from strategies.uncertainty import transform
         test_data = transform(args, sample_pool_data, test_data, model, args.uncertainty_func)
@@ -86,6 +86,7 @@ def parse_args():
     # model args
     parser.add_argument('--model', type=str, default="llama")
     parser.add_argument('--model_dir', type=str, default="/nobackup2/froilan/checkpoints/llama-2/Llama-2-7b-chat-hf/")
+    #parser.add_argument('--model_dir', type=str, default="/nobackup/hybai/code/EMICL/checkpoints/Llama-2-7b-chat-hf/llama-2/")
     # parser.add_argument('--lora_alpha', type=int, default=32)
     parser.add_argument('--verbose', action='store_true')
 
@@ -95,6 +96,7 @@ def parse_args():
     parser.add_argument('--penultlayer_for_sim', action='store_true')
     parser.add_argument('--choose_certain', action='store_true')
     parser.add_argument('--uncertainty_func', type=str, default='bin', choices=['bin','cat'])
+    parser.add_argument('--similarity_func', type=str, default='mat', choices=['mat', 'cosine', 'l2'])
 
     # train args
     # parser.add_argument('--dropout', type=float, default=0.0)

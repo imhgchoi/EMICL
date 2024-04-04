@@ -12,6 +12,7 @@ def transform(args, sample_pool_data, test_data, model):
     train_embs = get_embeddings(args, sample_pool_data[0], model)
 
     km = KMeans(n_clusters=args.K, n_init='auto').fit(train_embs.cpu())
+    #km = KMeans(n_clusters=args.K, n_init='k-means++').fit(train_embs.cpu())
     idx = return_indices(args.K, km, train_embs.cpu())
 
     prompt = ''
