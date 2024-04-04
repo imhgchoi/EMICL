@@ -90,7 +90,7 @@ def parse_args():
     parser.add_argument('--verbose', action='store_true')
 
     # ICL args
-    parser.add_argument('--K', type=int, default=3)
+    parser.add_argument('--K', type=int, default=10)
     parser.add_argument('--midlayer_for_sim', action='store_true')
     parser.add_argument('--penultlayer_for_sim', action='store_true')
     parser.add_argument('--choose_certain', action='store_true')
