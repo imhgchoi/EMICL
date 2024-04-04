@@ -1,18 +1,39 @@
 
-
-
-
 import torch
 from tqdm import tqdm
 
-def transform(args, sample_pool_data, test_data, model):
+from sklearn.metrics.pairwise import cosine_similarity
+
+from scipy.spatial import distance_matrix
+
+def jaccard_similarity(set1, set2):
+    intersection = len(set(set1) & set(set2))
+    union = len(set(set1) | set(set2))
+    return intersection / union
+
+def jaccard_distance(set1, set2):
+    return 1 - jaccard_similarity(set1, set2)
+
+
+def transform(args, sample_pool_data, test_data, model, func):
 
     print('computing sentence embeddings...')
+
     train_embs = get_embeddings(args, sample_pool_data[0], model)
     test_embs = get_embeddings(args, test_data[0], model)
 
-    sim = test_embs @ train_embs.T
-    val, idx = sim.topk(args.K)
+    if func == 'mat':
+        sim = test_embs @ train_embs.T
+        val, idx = sim.topk(args.K)
+    elif func == 'cosine':
+        sim = cosine_similarity(test_embs.cpu().numpy(), train_embs.cpu().numpy())
+        sim_tensor = torch.tensor(sim)
+        val, idx = sim_tensor.topk(args.K, dim=1)
+    elif func == 'l2':
+        sim = distance_matrix(test_embs.cpu().numpy(), train_embs.cpu().numpy())
+        sim = 1 / (1 + sim)
+        sim_tensor = torch.tensor(sim)
+        val, idx = (-sim_tensor).topk(args.K, dim=1)
     
     icl_test = []
     for x, y, ex_idx in zip(test_data[0], test_data[1], idx.cpu()):

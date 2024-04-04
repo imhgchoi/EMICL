@@ -40,6 +40,7 @@ def get_uncertainties(args, queries, labels, ref_model, func):
             uncertainty = - p_yes_norm * torch.log(p_yes_norm) - p_no_norm * torch.log(p_no_norm)
         elif func == 'cat':
             uncertainty = -torch.sum(dist * torch.log(dist))
+
         uncertainty_scores.append(uncertainty)
         
     return torch.tensor(uncertainty_scores).cuda()
